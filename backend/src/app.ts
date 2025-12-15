@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import { authRouter } from './routes/auth.routes.js'
+import { taskRouter } from './routes/task.routes.js'
 
 export const app = express()
 
@@ -20,3 +21,4 @@ app.get('/health', (_, res) => {
 })
 
 app.use('/auth', authRouter)
+app.use('/tasks', taskRouter)

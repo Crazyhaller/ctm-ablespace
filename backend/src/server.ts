@@ -3,7 +3,7 @@ import { Server } from 'socket.io'
 import { app } from './app.js'
 import { env } from './config/env.js'
 
-const httpServer = http.createServer(app)
+export const httpServer = http.createServer(app)
 
 export const io = new Server(httpServer, {
   cors: {
@@ -16,6 +16,8 @@ io.on('connection', (socket) => {
   console.log(`Socket connected: ${socket.id}`)
 })
 
-httpServer.listen(env.PORT, () => {
-  console.log(`Server running on http://localhost:${env.PORT}`)
-})
+export function startServer() {
+  httpServer.listen(env.PORT, () => {
+    console.log(`Server running on http://localhost:${env.PORT}`)
+  })
+}

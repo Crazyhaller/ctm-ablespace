@@ -1,12 +1,33 @@
-function App() {
-  return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
-      <div className="p-4 text-center">
-        <h1 className="text-xl font-semibold">Collaborative Task Manager</h1>
-        <p className="text-sm text-gray-600">Frontend initialized</p>
-      </div>
-    </div>
-  )
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import { ProtectedRoute } from './components/ProtectedRoute'
+import { useAuth } from './hooks/useAuth'
+import { useSocketAuth } from './hooks/useSocketAuth'
+
+function Dashboard() {
+  return <div className="p-6">Dashboard (coming next)</div>
 }
 
-export default App
+export default function App() {
+  const { data: user } = useAuth()
+  useSocketAuth(user)
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  )
+}

@@ -4,18 +4,51 @@ import { TaskCard } from '../components/TaskCard'
 import { useTaskSockets } from '../sockets/useTaskSockets'
 import type { TaskStatus, TaskPriority } from '../types/task'
 import { useState } from 'react'
+import { TaskSkeleton } from '../components/TaskSkeleton'
+import { TaskForm } from '../components/TaskForm'
+import { useCreateTask } from '../hooks/useTasks'
 
 export default function Dashboard() {
   const { data: user } = useAuth()
-  const { data: tasks, isLoading } = useTasks()
+  const { data: tasks, isLoading, error } = useTasks()
   const deleteTask = useDeleteTask()
   useTaskSockets()
-
   const [status, setStatus] = useState<TaskStatus | 'ALL'>('ALL')
   const [priority, setPriority] = useState<TaskPriority | 'ALL'>('ALL')
+  const [showForm, setShowForm] = useState(false)
+  const createTask = useCreateTask()
+
+  function handleCreateTask(data: {
+    title: string
+    description: string
+    dueDate: string
+    priority: TaskPriority
+  }) {
+    createTask.mutate(
+      {
+        ...data,
+        dueDate: new Date(data.dueDate).toISOString(),
+      },
+      {
+        onSuccess: () => {
+          setShowForm(false)
+        },
+      }
+    )
+  }
 
   if (isLoading) {
-    return <div className="p-6">Loading tasks...</div>
+    return (
+      <div className="p-6 grid gap-3">
+        <TaskSkeleton />
+        <TaskSkeleton />
+        <TaskSkeleton />
+      </div>
+    )
+  }
+
+  if (error) {
+    return <div className="p-6 text-red-600">Failed to load tasks.</div>
   }
 
   const filtered =
@@ -30,7 +63,22 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-xl font-semibold">Dashboard</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-xl font-semibold">Dashboard</h1>
+
+        <button
+          onClick={() => setShowForm((v) => !v)}
+          className="bg-black text-white px-4 py-2 rounded text-sm"
+        >
+          {showForm ? 'Cancel' : 'New Task'}
+        </button>
+      </div>
+
+      {showForm && (
+        <div className="border rounded p-4 bg-white">
+          <TaskForm onSubmit={handleCreateTask} />
+        </div>
+      )}
 
       <div className="flex gap-4">
         <select

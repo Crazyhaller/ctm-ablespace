@@ -4,10 +4,7 @@ import Register from './pages/Register'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { useAuth } from './hooks/useAuth'
 import { useSocketAuth } from './hooks/useSocketAuth'
-
-function Dashboard() {
-  return <div className="p-6">Dashboard (coming next)</div>
-}
+import Dashboard from './pages/Dashboard'
 
 export default function App() {
   const { data: user } = useAuth()

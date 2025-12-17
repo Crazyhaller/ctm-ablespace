@@ -1,6 +1,6 @@
 import { TaskRepository } from '../repositories/task.repository.js'
 import { UserRepository } from '../repositories/user.repository.js'
-import { io } from '../server.js'
+import { emitToUser, io } from '../server.js'
 
 export class TaskService {
   private taskRepo = new TaskRepository()
@@ -13,25 +13,37 @@ export class TaskService {
       description: string
       dueDate: Date
       priority: any
-      assignedToId?: string
+      assignedToId?: string | null
     }
   ) {
-    if (data.assignedToId) {
-      const user = await this.userRepo.findById(data.assignedToId)
+    const assignedToId =
+      data.assignedToId && data.assignedToId.trim() !== ''
+        ? data.assignedToId
+        : null
+
+    if (assignedToId) {
+      const user = await this.userRepo.findById(assignedToId)
       if (!user) {
         throw new Error('ASSIGNEE_NOT_FOUND')
       }
     }
 
     const task = await this.taskRepo.create({
-      ...data,
+      title: data.title,
+      description: data.description,
+      dueDate: data.dueDate,
+      priority: data.priority,
       creatorId,
+      assignedToId,
     })
 
+    // 🔔 Notify ONLY the assigned user
     if (task.assignedToId) {
-      io.emit('task:assigned', {
+      emitToUser(task.assignedToId, 'task:assigned', {
         taskId: task.id,
         assignedToId: task.assignedToId,
+        title: task.title,
+        creatorId: task.creatorId,
       })
     }
 
@@ -48,21 +60,33 @@ export class TaskService {
       throw new Error('FORBIDDEN')
     }
 
-    if (updates.assignedToId) {
-      const user = await this.userRepo.findById(updates.assignedToId)
-      if (!user) {
-        throw new Error('ASSIGNEE_NOT_FOUND')
+    let nextAssignedToId: string | null | undefined = undefined
+
+    if ('assignedToId' in updates) {
+      if (updates.assignedToId && updates.assignedToId.trim() !== '') {
+        const user = await this.userRepo.findById(updates.assignedToId)
+        if (!user) {
+          throw new Error('ASSIGNEE_NOT_FOUND')
+        }
+        nextAssignedToId = updates.assignedToId
+      } else {
+        nextAssignedToId = null
       }
     }
 
-    const updated = await this.taskRepo.update(taskId, updates)
+    const updated = await this.taskRepo.update(taskId, {
+      ...updates,
+      assignedToId: nextAssignedToId,
+    })
 
     io.emit('task:updated', updated)
 
-    if (updates.assignedToId && updates.assignedToId !== task.assignedToId) {
-      io.emit('task:assigned', {
+    if (nextAssignedToId && nextAssignedToId !== task.assignedToId) {
+      emitToUser(nextAssignedToId, 'task:assigned', {
         taskId: updated.id,
         assignedToId: updated.assignedToId,
+        title: updated.title,
+        creatorId: updated.creatorId,
       })
     }
 
@@ -79,7 +103,19 @@ export class TaskService {
       throw new Error('FORBIDDEN')
     }
 
-    return this.taskRepo.delete(taskId)
+    await this.taskRepo.delete(taskId)
+
+    // 🔔 Notify assigned user (if exists)
+    if (task.assignedToId) {
+      emitToUser(task.assignedToId, 'task:deleted', {
+        taskId: task.id,
+      })
+    }
+
+    // 🔔 Notify creator (optional but clean)
+    emitToUser(task.creatorId, 'task:deleted', {
+      taskId: task.id,
+    })
   }
 
   async getDashboardTasks(userId: string) {

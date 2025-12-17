@@ -4,10 +4,13 @@ import { loginSchema } from '../schemas/auth.schema'
 import { login } from '../api/auth'
 import { useAuthUtils } from '../hooks/useAuth'
 import { z } from 'zod'
+import { useNavigate } from 'react-router-dom'
 
 type LoginForm = z.infer<typeof loginSchema>
 
 export default function Login() {
+  const navigate = useNavigate()
+
   const { setUser } = useAuthUtils()
 
   const {
@@ -21,6 +24,7 @@ export default function Login() {
   async function onSubmit(data: LoginForm) {
     const user = await login(data)
     setUser(user)
+    navigate('/dashboard')
   }
 
   return (

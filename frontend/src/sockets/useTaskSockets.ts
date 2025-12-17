@@ -6,17 +6,18 @@ export function useTaskSockets() {
   const qc = useQueryClient()
 
   useEffect(() => {
-    socket.on('task:updated', () => {
+    const invalidateTasks = () => {
       qc.invalidateQueries({ queryKey: ['tasks'] })
-    })
+    }
 
-    socket.on('task:assigned', () => {
-      qc.invalidateQueries({ queryKey: ['tasks'] })
-    })
+    socket.on('task:updated', invalidateTasks)
+    socket.on('task:assigned', invalidateTasks)
+    socket.on('task:deleted', invalidateTasks) // ✅ NEW
 
     return () => {
-      socket.off('task:updated')
-      socket.off('task:assigned')
+      socket.off('task:updated', invalidateTasks)
+      socket.off('task:assigned', invalidateTasks)
+      socket.off('task:deleted', invalidateTasks)
     }
   }, [qc])
 }

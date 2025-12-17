@@ -12,9 +12,31 @@ export const io = new Server(httpServer, {
   },
 })
 
+// Map userId -> socketId
+const userSockets = new Map<string, string>()
+
 io.on('connection', (socket) => {
-  console.log(`Socket connected: ${socket.id}`)
+  const userId = socket.handshake.auth?.userId as string | undefined
+
+  if (userId) {
+    userSockets.set(userId, socket.id)
+    console.log(`User ${userId} connected via socket ${socket.id}`)
+  }
+
+  socket.on('disconnect', () => {
+    if (userId) {
+      userSockets.delete(userId)
+      console.log(`User ${userId} disconnected`)
+    }
+  })
 })
+
+export function emitToUser(userId: string, event: string, payload: any) {
+  const socketId = userSockets.get(userId)
+  if (socketId) {
+    io.to(socketId).emit(event, payload)
+  }
+}
 
 export function startServer() {
   httpServer.listen(env.PORT, () => {

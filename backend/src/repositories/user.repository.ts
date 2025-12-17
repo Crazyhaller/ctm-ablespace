@@ -24,4 +24,14 @@ export class UserRepository {
       data: { name },
     })
   }
+
+  async findAll() {
+    return prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+      },
+    })
+  }
 }

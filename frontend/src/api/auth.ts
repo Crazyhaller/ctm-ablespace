@@ -1,9 +1,17 @@
 import { api } from './client'
 import type { User } from '../types/user'
+import axios from 'axios'
 
-export async function getMe(): Promise<User> {
-  const res = await api.get('/auth/me')
-  return res.data.user
+export async function getMe(): Promise<User | null> {
+  try {
+    const res = await api.get('/auth/me')
+    return res.data.user
+  } catch (err) {
+    if (axios.isAxiosError(err) && err.response?.status === 401) {
+      return null
+    }
+    throw err
+  }
 }
 
 export async function login(data: {

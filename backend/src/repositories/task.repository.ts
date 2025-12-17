@@ -12,7 +12,7 @@ export class TaskRepository {
     dueDate: Date
     priority: TaskPriority
     creatorId: string
-    assignedToId?: string
+    assignedToId?: string | null
   }): Promise<Task> {
     return prisma.task.create({ data })
   }

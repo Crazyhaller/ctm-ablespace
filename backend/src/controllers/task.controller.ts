@@ -14,16 +14,29 @@ export async function createTask(req: AuthenticatedRequest, res: Response) {
     return res.status(400).json(parsed.error)
   }
 
+  // 🔑 Normalize assignedToId at the boundary
+  const assignedToId =
+    parsed.data.assignedToId && parsed.data.assignedToId.trim() !== ''
+      ? parsed.data.assignedToId
+      : undefined
+
   try {
     const task = await taskService.createTask(req.userId!, {
-      ...parsed.data,
+      title: parsed.data.title,
+      description: parsed.data.description,
       dueDate: new Date(parsed.data.dueDate),
+      priority: parsed.data.priority,
+      assignedToId, // ✅ normalized
     })
-    res.status(201).json({ task })
+
+    return res.status(201).json({ task })
   } catch (err) {
-    if ((err as Error).message === 'ASSIGNEE_NOT_FOUND') {
+    const msg = (err as Error).message
+
+    if (msg === 'ASSIGNEE_NOT_FOUND') {
       return res.status(404).json({ message: 'Assignee not found' })
     }
+
     throw err
   }
 }
@@ -34,24 +47,40 @@ export async function updateTask(req: AuthenticatedRequest, res: Response) {
     return res.status(400).json(parsed.error)
   }
 
+  // 🔑 Normalize assignment update
+  let assignedToId: string | null | undefined = undefined
+
+  if ('assignedToId' in parsed.data) {
+    if (parsed.data.assignedToId && parsed.data.assignedToId.trim() !== '') {
+      assignedToId = parsed.data.assignedToId
+    } else {
+      assignedToId = null // explicit unassign
+    }
+  }
+
   try {
-    const task = await taskService.updateTask(
-      req.params.id,
-      req.userId!,
-      parsed.data
-    )
-    res.json({ task })
+    const task = await taskService.updateTask(req.params.id, req.userId!, {
+      status: parsed.data.status,
+      priority: parsed.data.priority,
+      assignedToId,
+    })
+
+    return res.json({ task })
   } catch (err) {
     const msg = (err as Error).message
+
     if (msg === 'TASK_NOT_FOUND') {
       return res.status(404).json({ message: 'Task not found' })
     }
+
     if (msg === 'FORBIDDEN') {
       return res.status(403).json({ message: 'Forbidden' })
     }
+
     if (msg === 'ASSIGNEE_NOT_FOUND') {
       return res.status(404).json({ message: 'Assignee not found' })
     }
+
     throw err
   }
 }
@@ -59,15 +88,18 @@ export async function updateTask(req: AuthenticatedRequest, res: Response) {
 export async function deleteTask(req: AuthenticatedRequest, res: Response) {
   try {
     await taskService.deleteTask(req.params.id, req.userId!)
-    res.status(204).send()
+    return res.status(204).send()
   } catch (err) {
     const msg = (err as Error).message
+
     if (msg === 'TASK_NOT_FOUND') {
       return res.status(404).json({ message: 'Task not found' })
     }
+
     if (msg === 'FORBIDDEN') {
       return res.status(403).json({ message: 'Forbidden' })
     }
+
     throw err
   }
 }
@@ -77,5 +109,5 @@ export async function getDashboardTasks(
   res: Response
 ) {
   const tasks = await taskService.getDashboardTasks(req.userId!)
-  res.json({ tasks })
+  return res.json({ tasks })
 }

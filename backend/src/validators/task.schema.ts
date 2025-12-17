@@ -9,12 +9,20 @@ export const taskStatusEnum = z.enum([
   'COMPLETED',
 ])
 
+/**
+ * Normalize empty string -> null for optional assignment
+ */
+const assignedToIdSchema = z.preprocess((val) => {
+  if (val === '' || val === undefined) return null
+  return val
+}, z.string().uuid().nullable())
+
 export const createTaskSchema = z.object({
   title: z.string().max(100),
   description: z.string(),
   dueDate: z.string().datetime(),
   priority: taskPriorityEnum,
-  assignedToId: z.string().uuid().optional(),
+  assignedToId: assignedToIdSchema.optional(),
 })
 
 export const updateTaskSchema = z.object({
@@ -23,5 +31,5 @@ export const updateTaskSchema = z.object({
   dueDate: z.string().datetime().optional(),
   priority: taskPriorityEnum.optional(),
   status: taskStatusEnum.optional(),
-  assignedToId: z.string().uuid().nullable().optional(),
+  assignedToId: assignedToIdSchema.optional(),
 })

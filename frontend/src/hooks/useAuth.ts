@@ -3,7 +3,7 @@ import { getMe } from '../api/auth'
 import type { User } from '../types/user'
 
 export function useAuth() {
-  return useQuery<User>({
+  return useQuery<User | null>({
     queryKey: ['me'],
     queryFn: getMe,
     retry: false,

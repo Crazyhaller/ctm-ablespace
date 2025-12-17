@@ -4,14 +4,20 @@ import type { User } from '../types/user'
 
 export function useSocketAuth(user?: User) {
   useEffect(() => {
-    if (user) {
-      socket.connect()
-    } else {
-      socket.disconnect()
+    if (!user) {
+      if (socket.connected) {
+        socket.disconnect()
+      }
+      return
     }
 
-    return () => {
-      socket.disconnect()
+    // Identify the user BEFORE connecting
+    socket.auth = { userId: user.id }
+
+    if (!socket.connected) {
+      socket.connect()
     }
+
+    // ❌ DO NOT disconnect in cleanup (StrictMode safe)
   }, [user])
 }

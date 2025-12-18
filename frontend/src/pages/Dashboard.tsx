@@ -81,20 +81,20 @@ export default function Dashboard() {
   return (
     <>
       <Navbar />
-      <div className="p-6 space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-xl font-semibold">Dashboard</h1>
+      <div className="container">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-semibold">Dashboard</h1>
 
           <button
             onClick={() => setShowForm((v) => !v)}
-            className="bg-black text-white px-4 py-2 rounded text-sm"
+            className="btn-primary"
           >
             {showForm ? 'Cancel' : 'New Task'}
           </button>
         </div>
 
         {showForm && (
-          <div className="border rounded p-4 bg-white">
+          <div className="card">
             <TaskForm mode="create" onSubmit={handleCreateTask} />
           </div>
         )}
@@ -102,6 +102,7 @@ export default function Dashboard() {
         <div className="flex gap-4">
           <select
             onChange={(e) => setStatus(e.target.value as TaskStatus | 'ALL')}
+            className="input w-48"
           >
             <option value="ALL">All Status</option>
             <option value="TODO">To Do</option>
@@ -114,6 +115,7 @@ export default function Dashboard() {
             onChange={(e) =>
               setPriority(e.target.value as TaskPriority | 'ALL')
             }
+            className="input w-48"
           >
             <option value="ALL">All Priority</option>
             <option value="LOW">Low</option>
@@ -125,6 +127,7 @@ export default function Dashboard() {
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value as 'ASC' | 'DESC')}
+            className="input w-36"
           >
             <option value="ASC">Due Date ↑</option>
             <option value="DESC">Due Date ↓</option>
@@ -133,7 +136,9 @@ export default function Dashboard() {
 
         {overdue.length > 0 && (
           <section>
-            <h2 className="font-medium mb-2 text-red-600">Overdue Tasks</h2>
+            <h2 className="font-medium mb-2 text-[var(--color-danger)]">
+              Overdue Tasks
+            </h2>
             <div className="grid gap-3">
               {overdue.map((task) => (
                 <TaskCard
@@ -157,7 +162,7 @@ export default function Dashboard() {
               />
             ))}
             {assigned.length === 0 && (
-              <p className="text-sm text-gray-500">No tasks assigned to you.</p>
+              <p className="text-sm muted">No tasks assigned to you.</p>
             )}
           </div>
         </section>

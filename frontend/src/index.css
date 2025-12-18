@@ -1,1 +1,64 @@
 @import 'tailwindcss';
+
+:root {
+  --color-surface: #071226;
+  --color-surface-2: #0b1630;
+  --color-accent: #7c3aed;
+  --color-muted: #94a3b8;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-foreground: #e6eef8;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-gradient-to-b from-[var(--color-surface)] to-[var(--color-surface-2)] text-[var(--color-foreground)] font-sans antialiased;
+  }
+}
+
+@layer components {
+  .container {
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2rem;
+  }
+  .card {
+    @apply bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.04)] rounded-xl p-4 shadow-md;
+  }
+  .card-plain {
+    @apply bg-transparent border-0 p-0 rounded-none shadow-none;
+  }
+  .btn {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-shadow;
+  }
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-shadow bg-[var(--color-accent)] text-white shadow hover:brightness-105;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-shadow text-[var(--color-foreground)] bg-transparent ring-1 ring-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.02)];
+  }
+  .input {
+    @apply w-full p-3 rounded-md bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.04)] placeholder:text-[var(--color-muted)];
+  }
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 text-xs rounded-full bg-[rgba(255,255,255,0.03)] text-[var(--color-foreground)];
+  }
+  .badge-priority-low {
+    @apply bg-[rgba(16,185,129,0.12)] text-[var(--color-success)];
+  }
+  .badge-priority-high {
+    @apply bg-[rgba(124,58,237,0.12)] text-[var(--color-accent)];
+  }
+  .badge-status {
+    @apply rounded-md px-2 py-1 text-xs font-medium;
+  }
+  .muted {
+    color: var(--color-muted);
+  }
+}

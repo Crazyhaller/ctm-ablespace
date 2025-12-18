@@ -28,33 +28,28 @@ export default function Login() {
   }
 
   return (
-    <div className="max-w-sm mx-auto mt-20 p-6 bg-white rounded shadow">
-      <h2 className="text-lg font-semibold mb-4">Login</h2>
+    <div className="container">
+      <div className="card max-w-md mx-auto mt-12">
+        <h2 className="text-lg font-semibold mb-4">Login</h2>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <input
-          {...register('email')}
-          placeholder="Email"
-          className="w-full border p-2 rounded"
-        />
-        <input
-          {...register('password')}
-          type="password"
-          placeholder="Password"
-          className="w-full border p-2 rounded"
-        />
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <input {...register('email')} placeholder="Email" className="input" />
+          <input
+            {...register('password')}
+            type="password"
+            placeholder="Password"
+            className="input"
+          />
 
-        {errors.email && (
-          <p className="text-sm text-red-600">{errors.email.message}</p>
-        )}
+          {errors.email && (
+            <p className="text-sm text-red-600">{errors.email.message}</p>
+          )}
 
-        <button
-          disabled={isSubmitting}
-          className="w-full bg-black text-white py-2 rounded"
-        >
-          Login
-        </button>
-      </form>
+          <button disabled={isSubmitting} className="btn-primary w-full">
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   )
 }

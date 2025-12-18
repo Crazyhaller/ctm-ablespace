@@ -13,12 +13,19 @@ export function Navbar() {
   }
 
   return (
-    <nav className="bg-white border-b px-6 py-3 flex justify-between">
-      <span className="font-semibold">Task Manager</span>
+    <nav className="card flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-md bg-[var(--color-accent)] flex items-center justify-center font-bold">
+          TM
+        </div>
+        <span className="text-lg font-semibold">Task Manager</span>
+      </div>
 
-      <button onClick={handleLogout} className="text-sm text-red-600">
-        Logout
-      </button>
+      <div className="flex items-center gap-3">
+        <button onClick={handleLogout} className="btn-ghost">
+          Logout
+        </button>
+      </div>
     </nav>
   )
 }

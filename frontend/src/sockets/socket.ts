@@ -1,6 +1,11 @@
 import { io } from 'socket.io-client'
 
-export const socket = io('http://localhost:4000', {
+const SOCKET_URL =
+  import.meta.env.VITE_SOCKET_URL ??
+  import.meta.env.VITE_API_URL ??
+  'http://localhost:4000'
+
+export const socket = io(SOCKET_URL, {
   withCredentials: true,
-  autoConnect: false, // important: connect only after auth
+  autoConnect: false,
 })

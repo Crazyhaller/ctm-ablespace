@@ -7,16 +7,17 @@ import {
 } from '../validators/auth.schema.js'
 import { UserRepository } from '../repositories/user.repository.js'
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware.js'
+import { env } from '../config/env.js' // already available in env.ts
+import type { CookieOptions } from 'express'
 
 const authService = new AuthService()
 const userRepo = new UserRepository()
 
-const COOKIE_OPTIONS = {
+const COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
-  sameSite: 'lax' as const,
-  secure: false, // set true in production with HTTPS
+  sameSite: (env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
+  secure: env.NODE_ENV === 'production',
 }
-
 export async function register(req: Request, res: Response) {
   const parsed = registerSchema.safeParse(req.body)
   if (!parsed.success) {

@@ -143,18 +143,3 @@ Frontend implementation notes:
 - Scaling sockets: the simple in-memory map (userId -> socketId) is sufficient for a single server but will need moving to a shared store (Redis) when scaling across instances.
 
 ---
-
-## Contributing
-
-PRs welcome — please open issues for feature requests or bugs. Follow the existing test patterns and add tests when changing backend behavior.
-
----
-
-If you'd like, I can also add:
-
-- Auto-generated API docs (OpenAPI / Swagger) for the endpoints above
-- A short E2E test that simulates multi-user socket behaviour
-
----
-
-Thanks — happy to walk through any part of the code or expand the README further with diagrams or API examples.

@@ -5,16 +5,16 @@
     "target": "ES2023",
     "strict": true,
     "esModuleInterop": true,
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "dist",
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node"]
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "generated/**/*"],
   "exclude": [
     "node_modules",
     "dist",
-    "generated",
     "prisma.config.ts",
     "jest.config.ts",
     "tests",

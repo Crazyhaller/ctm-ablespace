@@ -18,6 +18,9 @@
     "prisma.config.ts",
     "jest.config.ts",
     "tests",
+    "src/tests",
+    "src/tests/**",
+    "src/**/__mocks__/**",
     "**/*.test.ts"
   ]
 }

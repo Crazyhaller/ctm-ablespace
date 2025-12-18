@@ -41,29 +41,23 @@ export async function createTask(req: AuthenticatedRequest, res: Response) {
   }
 }
 
+import { buildTaskUpdates } from './task.util.js'
+
 export async function updateTask(req: AuthenticatedRequest, res: Response) {
   const parsed = updateTaskSchema.safeParse(req.body)
   if (!parsed.success) {
     return res.status(400).json(parsed.error)
   }
 
-  // 🔑 Normalize assignment update
-  let assignedToId: string | null | undefined = undefined
-
-  if ('assignedToId' in parsed.data) {
-    if (parsed.data.assignedToId && parsed.data.assignedToId.trim() !== '') {
-      assignedToId = parsed.data.assignedToId
-    } else {
-      assignedToId = null // explicit unassign
-    }
-  }
+  // 🔑 Normalize update payload
+  const updates = buildTaskUpdates(parsed.data)
 
   try {
-    const task = await taskService.updateTask(req.params.id, req.userId!, {
-      status: parsed.data.status,
-      priority: parsed.data.priority,
-      assignedToId,
-    })
+    const task = await taskService.updateTask(
+      req.params.id,
+      req.userId!,
+      updates
+    )
 
     return res.json({ task })
   } catch (err) {
@@ -84,7 +78,6 @@ export async function updateTask(req: AuthenticatedRequest, res: Response) {
     throw err
   }
 }
-
 export async function deleteTask(req: AuthenticatedRequest, res: Response) {
   try {
     await taskService.deleteTask(req.params.id, req.userId!)

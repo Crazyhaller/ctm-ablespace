@@ -21,25 +21,33 @@ export function useNotifications() {
       toast.info(`📝 New task assigned: ${payload.title}`)
     }
 
-    const attachListeners = () => {
-      socket.on('task:assigned', handleTaskAssigned)
+    const handleTaskUpdated = (payload: {
+      taskId: string
+      title: string
+      assignedToId?: string | null
+      updatedById: string
+      creatorId?: string
+    }) => {
+      // Assigned user: notify when someone else (creator) updated the task
+      if (payload.assignedToId === user.id && payload.updatedById !== user.id) {
+        toast.info(`✏️ Task updated: ${payload.title}`)
+        return
+      }
+
+      // Creator: notify when someone else (assignee) updated the task (e.g., status change)
+      if (payload.creatorId === user.id && payload.updatedById !== user.id) {
+        toast.info(`🔁 Task updated by assignee: ${payload.title}`)
+        return
+      }
     }
 
-    const detachListeners = () => {
-      socket.off('task:assigned', handleTaskAssigned)
-    }
-
-    // 🔑 Attach after connection
-    if (socket.connected) {
-      attachListeners()
-    }
-
-    // 🔁 Re-attach on reconnect
-    socket.on('connect', attachListeners)
+    // Attach listeners once; socket.on will remain active across reconnects
+    socket.on('task:assigned', handleTaskAssigned)
+    socket.on('task:updated', handleTaskUpdated)
 
     return () => {
-      detachListeners()
-      socket.off('connect', attachListeners)
+      socket.off('task:assigned', handleTaskAssigned)
+      socket.off('task:updated', handleTaskUpdated)
     }
   }, [user])
 }

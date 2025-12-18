@@ -16,6 +16,7 @@ export default function Dashboard() {
   useTaskSockets()
   const [status, setStatus] = useState<TaskStatus | 'ALL'>('ALL')
   const [priority, setPriority] = useState<TaskPriority | 'ALL'>('ALL')
+  const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC'>('ASC')
   const [showForm, setShowForm] = useState(false)
   const createTask = useCreateTask()
 
@@ -61,8 +62,21 @@ export default function Dashboard() {
       return true
     }) ?? []
 
-  const assigned = filtered.filter((t) => t.assignedToId === user?.id)
-  const created = filtered.filter((t) => t.creatorId === user?.id)
+  const sorted = [...filtered].sort((a, b) => {
+    const diff = new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+
+    return sortOrder === 'ASC' ? diff : -diff
+  })
+
+  const now = new Date()
+
+  const overdue = sorted.filter(
+    (t) => new Date(t.dueDate) < now && t.status !== 'COMPLETED'
+  )
+
+  const assigned = sorted.filter((t) => t.assignedToId === user?.id)
+
+  const created = sorted.filter((t) => t.creatorId === user?.id)
 
   return (
     <>
@@ -81,7 +95,7 @@ export default function Dashboard() {
 
         {showForm && (
           <div className="border rounded p-4 bg-white">
-            <TaskForm onSubmit={handleCreateTask} />
+            <TaskForm mode="create" onSubmit={handleCreateTask} />
           </div>
         )}
 
@@ -107,7 +121,30 @@ export default function Dashboard() {
             <option value="HIGH">High</option>
             <option value="URGENT">Urgent</option>
           </select>
+
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as 'ASC' | 'DESC')}
+          >
+            <option value="ASC">Due Date ↑</option>
+            <option value="DESC">Due Date ↓</option>
+          </select>
         </div>
+
+        {overdue.length > 0 && (
+          <section>
+            <h2 className="font-medium mb-2 text-red-600">Overdue Tasks</h2>
+            <div className="grid gap-3">
+              {overdue.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onDelete={() => deleteTask.mutate(task.id)}
+                />
+              ))}
+            </div>
+          </section>
+        )}
 
         <section>
           <h2 className="font-medium mb-2">Tasks Assigned To Me</h2>

@@ -7,7 +7,10 @@ import { userRouter } from './routes/user.routes.js'
 
 export const app = express()
 
-const FRONTEND_URL = process.env.FRONTEND_URL ?? 'http://localhost:5173'
+const FRONTEND_URL = (
+  process.env.FRONTEND_URL ?? 'http://localhost:5173'
+).replace(/\/$/, '')
+
 app.use(cors({ origin: FRONTEND_URL, credentials: true }))
 
 app.use(express.json())

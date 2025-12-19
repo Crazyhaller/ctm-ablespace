@@ -17,6 +17,7 @@ const COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
   sameSite: (env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
   secure: env.NODE_ENV === 'production',
+  path: '/',
 }
 export async function register(req: Request, res: Response) {
   const parsed = registerSchema.safeParse(req.body)

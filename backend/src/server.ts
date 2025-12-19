@@ -5,7 +5,10 @@ import { env } from './config/env.js'
 
 export const httpServer = http.createServer(app)
 
-const FRONTEND_URL = process.env.FRONTEND_URL ?? 'http://localhost:5173'
+const FRONTEND_URL = (
+  process.env.FRONTEND_URL ?? 'http://localhost:5173'
+).replace(/\/$/, '')
+
 export const io = new Server(httpServer, {
   cors: {
     origin: FRONTEND_URL,

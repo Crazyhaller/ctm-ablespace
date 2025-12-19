@@ -8,8 +8,10 @@ function required(key: string): string {
   return value
 }
 
+const port = Number(process.env.PORT)
+
 export const env = {
-  PORT: Number(process.env.PORT ?? 4000),
+  PORT: Number.isFinite(port) && port > 0 ? port : 3000,
   DATABASE_URL: required('DATABASE_URL'),
   JWT_SECRET: required('JWT_SECRET'),
   NODE_ENV: process.env.NODE_ENV ?? 'development',

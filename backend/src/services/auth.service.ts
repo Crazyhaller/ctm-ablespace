@@ -1,6 +1,6 @@
-import { UserRepository } from '../repositories/user.repository.js'
-import { hashPassword, comparePassword } from '../utils/password.js'
-import { signJwt } from '../utils/jwt.js'
+import { UserRepository } from '../repositories/user.repository'
+import { hashPassword, comparePassword } from '../utils/password'
+import { signJwt } from '../utils/jwt'
 
 export class AuthService {
   private userRepo = new UserRepository()

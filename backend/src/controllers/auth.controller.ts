@@ -1,13 +1,13 @@
 import type { Request, Response } from 'express'
-import { AuthService } from '../services/auth.service.js'
+import { AuthService } from '../services/auth.service'
 import {
   registerSchema,
   loginSchema,
   updateProfileSchema,
-} from '../validators/auth.schema.js'
-import { UserRepository } from '../repositories/user.repository.js'
-import type { AuthenticatedRequest } from '../middlewares/auth.middleware.js'
-import { env } from '../config/env.js' // already available in env.ts
+} from '../validators/auth.schema'
+import { UserRepository } from '../repositories/user.repository'
+import type { AuthenticatedRequest } from '../middlewares/auth.middleware'
+import { env } from '../config/env'
 import type { CookieOptions } from 'express'
 
 const authService = new AuthService()

@@ -1,7 +1,7 @@
 import http from 'http'
 import { Server } from 'socket.io'
-import { app } from './app.js'
-import { env } from './config/env.js'
+import { app } from './app'
+import { env } from './config/env'
 
 export const httpServer = http.createServer(app)
 
@@ -40,7 +40,7 @@ export function emitToUser(userId: string, event: string, payload: any) {
 }
 
 export function startServer() {
-  httpServer.listen(env.PORT, () => {
-    console.log(`Server running on http://localhost:${env.PORT}`)
+  httpServer.listen(env.PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${env.PORT}`)
   })
 }

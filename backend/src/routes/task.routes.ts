@@ -1,11 +1,11 @@
 import { Router } from 'express'
-import { requireAuth } from '../middlewares/auth.middleware.js'
+import { requireAuth } from '../middlewares/auth.middleware'
 import {
   createTask,
   updateTask,
   deleteTask,
   getDashboardTasks,
-} from '../controllers/task.controller.js'
+} from '../controllers/task.controller'
 
 export const taskRouter = Router()
 

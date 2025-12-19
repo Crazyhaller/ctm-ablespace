@@ -1,6 +1,6 @@
-import { TaskRepository } from '../repositories/task.repository.js'
-import { UserRepository } from '../repositories/user.repository.js'
-import { emitToUser, io } from '../server.js'
+import { TaskRepository } from '../repositories/task.repository'
+import { UserRepository } from '../repositories/user.repository'
+import { emitToUser, io } from '../server'
 
 export class TaskService {
   private taskRepo = new TaskRepository()

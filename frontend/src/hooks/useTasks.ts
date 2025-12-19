@@ -5,22 +5,22 @@ import type { User } from '../types/user'
 
 export function useTasks(user: User | null | undefined) {
   return useQuery<Task[]>({
-    queryKey: ['tasks'],
+    queryKey: ['tasks', user?.id],
     queryFn: api.getTasks,
-    enabled: !!user,
+    enabled: !!user?.id,
     retry: false,
   })
 }
 
-export function useCreateTask() {
+export function useCreateTask(userId: string) {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: api.createTask,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks'] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks', userId] }),
   })
 }
 
-export function useUpdateTask() {
+export function useUpdateTask(userId: string) {
   const qc = useQueryClient()
 
   return useMutation({
@@ -28,15 +28,15 @@ export function useUpdateTask() {
       api.updateTask(id, data),
 
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['tasks'] })
+      qc.invalidateQueries({ queryKey: ['tasks', userId] })
     },
   })
 }
 
-export function useDeleteTask() {
+export function useDeleteTask(userId: string) {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: api.deleteTask,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks'] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['tasks', userId] }),
   })
 }

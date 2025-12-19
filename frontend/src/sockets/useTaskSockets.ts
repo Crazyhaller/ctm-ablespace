@@ -7,7 +7,7 @@ export function useTaskSockets() {
 
   useEffect(() => {
     const invalidateTasks = () => {
-      qc.invalidateQueries({ queryKey: ['tasks'] })
+      qc.invalidateQueries({ queryKey: ['tasks', user.id] })
     }
 
     socket.on('task:updated', invalidateTasks)

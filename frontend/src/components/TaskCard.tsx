@@ -13,7 +13,7 @@ export function TaskCard({
   onDelete: () => void
 }) {
   const { data: user } = useAuth()
-  const updateTask = useUpdateTask()
+  const updateTask = useUpdateTask(user!.id)
 
   const [isEditing, setIsEditing] = useState(false)
 

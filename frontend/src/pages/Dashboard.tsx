@@ -13,13 +13,13 @@ export default function Dashboard() {
   const { data: user } = useAuth()
   const { data: tasks, isLoading, error } = useTasks(user)
 
-  const deleteTask = useDeleteTask()
+  const deleteTask = useDeleteTask(user!.id)
   useTaskSockets()
   const [status, setStatus] = useState<TaskStatus | 'ALL'>('ALL')
   const [priority, setPriority] = useState<TaskPriority | 'ALL'>('ALL')
   const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC'>('ASC')
   const [showForm, setShowForm] = useState(false)
-  const createTask = useCreateTask()
+  const createTask = useCreateTask(user!.id)
 
   function handleCreateTask(data: {
     title: string

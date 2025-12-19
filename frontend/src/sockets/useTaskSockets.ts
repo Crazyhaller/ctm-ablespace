@@ -1,13 +1,15 @@
 import { useEffect } from 'react'
 import { socket } from './socket'
 import { useQueryClient } from '@tanstack/react-query'
+import { useAuth } from '../hooks/useAuth'
 
 export function useTaskSockets() {
+  const { data: user } = useAuth()
   const qc = useQueryClient()
 
   useEffect(() => {
     const invalidateTasks = () => {
-      qc.invalidateQueries({ queryKey: ['tasks', user.id] })
+      qc.invalidateQueries({ queryKey: ['tasks', user?.id] })
     }
 
     socket.on('task:updated', invalidateTasks)

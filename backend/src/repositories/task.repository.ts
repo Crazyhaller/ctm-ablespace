@@ -1,9 +1,5 @@
 import { prisma } from '../lib/prisma.js'
-import type {
-  Task,
-  TaskPriority,
-  TaskStatus,
-} from '../../generated/prisma/client'
+import type { Task, TaskPriority, TaskStatus } from '@prisma/client'
 
 export class TaskRepository {
   create(data: {

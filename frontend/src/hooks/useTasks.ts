@@ -1,11 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import * as api from '../api/tasks'
 import type { Task } from '../types/task'
+import type { User } from '../types/user'
 
-export function useTasks() {
+export function useTasks(user: User | null | undefined) {
   return useQuery<Task[]>({
     queryKey: ['tasks'],
     queryFn: api.getTasks,
+    enabled: !!user,
+    retry: false,
   })
 }
 

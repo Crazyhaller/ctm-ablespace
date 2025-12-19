@@ -11,7 +11,8 @@ import { Navbar } from '../components/Navbar'
 
 export default function Dashboard() {
   const { data: user } = useAuth()
-  const { data: tasks, isLoading, error } = useTasks()
+  const { data: tasks, isLoading, error } = useTasks(user)
+
   const deleteTask = useDeleteTask()
   useTaskSockets()
   const [status, setStatus] = useState<TaskStatus | 'ALL'>('ALL')

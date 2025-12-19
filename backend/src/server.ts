@@ -1,7 +1,7 @@
 import http from 'http'
 import { Server } from 'socket.io'
-import { app } from './app'
-import { env } from './config/env'
+import { app } from './app.js'
+import { env } from './config/env.js'
 
 export const httpServer = http.createServer(app)
 

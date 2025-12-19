@@ -1,9 +1,9 @@
 import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-import { authRouter } from './routes/auth.routes'
-import { taskRouter } from './routes/task.routes'
-import { userRouter } from './routes/user.routes'
+import { authRouter } from './routes/auth.routes.js'
+import { taskRouter } from './routes/task.routes.js'
+import { userRouter } from './routes/user.routes.js'
 
 export const app = express()
 

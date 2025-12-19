@@ -5,8 +5,8 @@ import {
   logout,
   me,
   updateProfile,
-} from '../controllers/auth.controller'
-import { requireAuth } from '../middlewares/auth.middleware'
+} from '../controllers/auth.controller.js'
+import { requireAuth } from '../middlewares/auth.middleware.js'
 
 export const authRouter = Router()
 

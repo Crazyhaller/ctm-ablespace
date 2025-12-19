@@ -1,6 +1,6 @@
 import type { Response } from 'express'
-import type { AuthenticatedRequest } from '../middlewares/auth.middleware'
-import { UserRepository } from '../repositories/user.repository'
+import type { AuthenticatedRequest } from '../middlewares/auth.middleware.js'
+import { UserRepository } from '../repositories/user.repository.js'
 
 const repo = new UserRepository()
 

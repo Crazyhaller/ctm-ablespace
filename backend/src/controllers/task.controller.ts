@@ -1,7 +1,10 @@
 import type { Response } from 'express'
-import type { AuthenticatedRequest } from '../middlewares/auth.middleware'
-import { createTaskSchema, updateTaskSchema } from '../validators/task.schema'
-import { TaskService } from '../services/task.service'
+import type { AuthenticatedRequest } from '../middlewares/auth.middleware.js'
+import {
+  createTaskSchema,
+  updateTaskSchema,
+} from '../validators/task.schema.js'
+import { TaskService } from '../services/task.service.js'
 
 const taskService = new TaskService()
 

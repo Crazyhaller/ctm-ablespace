@@ -102,8 +102,11 @@ export class TaskService {
       creatorId: updated.creatorId,
     }
 
-    // broadcast so lists refresh
-    io.emit('task:updated', payload)
+    emitToUser(task.creatorId, 'task:updated', payload)
+
+    if (task.assignedToId) {
+      emitToUser(task.assignedToId, 'task:updated', payload)
+    }
 
     // If assignment changed, notify the new assignee (like before)
     if (nextAssignedToId && nextAssignedToId !== task.assignedToId) {
